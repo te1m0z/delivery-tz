@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Delivery Task</title>
+	<link rel="stylesheet" href="/frontend/css/styles.css" />
+</head>
+
+<body>
+
+	<form id="delivery-form">
+		
+		<label>
+			Название компании
+			<select name="company" required>
+				<option value="comp1">Компания 1</option>
+				<option value="comp2">Компания 2</option>
+				<option value="comp3">Компания 3</option>
+			</select>
+		</label>
+
+		<label>
+			Тип доставки
+			<select name="delivery_type" required>
+				<option value="slow">Медленная</option>
+				<option value="quick">Быстрая</option>
+			</select>
+		</label>
+
+		<label>
+			Вес (кг):
+			<input type="number" name="weight" required />
+		</label>
+
+		<label>
+			Откуда:
+			<input type="text" name="source" required />
+		</label>
+
+		<label>
+			Куда:
+			<input type="text" name="target" required />
+		</label>
+
+		<button type="submit">Отправить</button>
+
+	</form>
+
+	<div class="error"></div>
+
+	<div class="success"></div>
+
+	<script src="/frontend/js/libs/jquery-3.6.1.min.js"></script>
+	<script src="/frontend/js/libs/axios.min.js"></script>
+	<script src="/frontend/js/script.js"></script>
+</body>
+
+</html>
