@@ -12,7 +12,7 @@ $(function() {
         const displayError   = (text) => $('.error').html(text);
         const displaySuccess = (text) => $('.success').html(text);
 
-        axios.post('/backend/app/public/index.php', data)
+        axios.post('/backend/index.php', data)
             .then(res => {
                 const data = res.data;
                 flushMessages();

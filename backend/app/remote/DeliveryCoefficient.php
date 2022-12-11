@@ -2,8 +2,12 @@
 
 namespace App\Remote;
 
-class DeliverySlowCoefficient
+class DeliveryCoefficient
 {
+    /**
+     * @param string $company
+     * @return float
+     */
     public static function handle( string $company ): float
     {
         if ( $company === 'comp1' ) {

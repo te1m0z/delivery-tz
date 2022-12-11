@@ -6,54 +6,54 @@ use App\Modules\Delivery\Interfaces\DeliveryInterface;
 
 class Delivery implements DeliveryInterface
 {
-    public function getCompany(): string
+    /**
+     * @var object
+     */
+    private object $currentDelivery;
+    /**
+     * @var array
+     */
+    private array  $currentParams;
+    /**
+     * @var DeliveryFactory
+     */
+    private DeliveryFactory $factory;
+
+    /**
+     * Создание фабрики
+     */
+    public function __construct()
     {
-        return $this->company;
+        $this->factory = new DeliveryFactory();
     }
 
-    public function setCompany( string $name ): void
+    /**
+     * @param string $type
+     * @param array $params
+     * @return object
+     */
+    public function make( string $type, array $params ): object
     {
-        $this->company = $name;
+        if ( $type === 'slow' )
+        {
+            $this->currentParams = [ $params['source'], $params['target'], $params['weight'], $params['company'] ];
+            $this->currentDelivery = $this->factory->createDeliverySlow();
+            return $this->currentDelivery;
+        }
+
+        if ( $type === 'quick' )
+        {
+            $this->currentParams = [ $params['source'], $params['target'], $params['weight'], $params['company'] ];
+            $this->currentDelivery = $this->factory->createDeliveryQuick();
+            return $this->currentDelivery;
+        }
     }
 
-    public function getSourceKladr(): string
+    /**
+     * @return array
+     */
+    public function run(): array
     {
-        return $this->sourceKladr;
-    }
-
-    public function setSourceKladr(string $source): void
-    {
-        $this->sourceKladr = $source;
-    }
-
-    public function getTargetKladr(): string
-    {
-        return $this->targetKladr;
-    }
-
-    public function setTargetKladr(string $target): void
-    {
-        $this->targetKladr = $target;
-    }
-
-    public function getWeight(): float
-    {
-        return $this->weight;
-    }
-
-    public function setWeight(float $weight): void
-    {
-        $this->weight = $weight;
-    }
-
-
-    public function getPrice(): float
-    {
-        return static::getPrice();
-    }
-
-    public function getDate(): string
-    {
-        return static::getDate();
+        return $this->currentDelivery->run( ...$this->currentParams );
     }
 }

@@ -4,37 +4,38 @@ namespace App\Modules\Delivery;
 
 use App\Modules\Delivery\Interfaces\DeliveryQuickInterface;
 use App\Remote\DeliveryQuickAvailable;
-use App\Remote\DeliveryQuickCoefficient;
+use App\Remote\DeliveryQuickPlugger;
 
-class DeliveryQuick extends Delivery implements DeliveryQuickInterface
+class DeliveryQuick implements DeliveryQuickInterface
 {
-
-    public function handle()
+    /**
+     * @param string $source
+     * @param string $target
+     * @param float $weight
+     * @param string $company
+     * @return string[]
+     */
+    public function run( string $source, string $target, float $weight, string $company ): array
     {
-        $is_available = DeliveryQuickAvailable::handle();
-
-        if ( !$is_available ) {
+        if ( ! DeliveryQuickAvailable::handle() ) {
             return [
                 'error' => 'Быстрая доставка уже закрыта'
             ];
-            die;
+            exit;
         }
 
-        return [
-            'price' => $this->getPrice(),
-            'date'  => $this->getDate(),
-        ];
-    }
+        try {
 
-    public function getPrice(): float
-    {
-        $comp = $this->getCompany();
-        return $this->getWeight() * DeliveryQuickCoefficient::handle( $comp );
-    }
+            $deliveryPlugger = new DeliveryQuickPlugger();
+            
+            $data = $deliveryPlugger->getResponse( $company, $weight );
 
-    public function getDate(): string
-    {
-        return date('Y-m-d', strtotime('+1 day'));
+            return $data;
+
+        } catch (\Exception $err) {
+
+            return [ 'error' => "DeliveryQuick run() error: " . $err ];
+            exit;
+        }
     }
-    
 }

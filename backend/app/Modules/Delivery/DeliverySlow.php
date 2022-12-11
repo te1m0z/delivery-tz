@@ -3,35 +3,31 @@
 namespace App\Modules\Delivery;
 
 use App\Modules\Delivery\Interfaces\DeliverySlowInterface;
-use App\Remote\DeliverySlowCoefficient;
+use App\Remote\DeliveryQuickPlugger;
 
-class DeliverySlow extends Delivery implements DeliverySlowInterface
+class DeliverySlow implements DeliverySlowInterface
 {
-    private $base_price = 150;
-
-    public function handle()
+    /**
+     * @param string $source
+     * @param string $target
+     * @param float $weight
+     * @param string $company
+     * @return string[]
+     */
+    public function run( string $source, string $target, float $weight, string $company ): array
     {
-        $this->coef = $this->getCoefficient();
+        try {
 
-        return [
-            'price' => $this->getPrice(),
-            'date'  => $this->getDate(),
-        ];
-    }
+            $deliveryPlugger = new DeliveryQuickPlugger();
+            
+            $data = $deliveryPlugger->getResponse( $company, $weight );
 
-    private function getCoefficient(): float
-    {
-        $comp = $this->getCompany();
-        return DeliverySlowCoefficient::handle( $comp );
-    }
+            return $data;
 
-    public function getPrice(): float
-    {
-        return  $this->base_price * $this->getCoefficient();
-    }
+        } catch (\Exception $err) {
 
-    public function getDate(): string
-    {
-        return date('Y-m-d', strtotime('+4 day'));
+            return [ 'error' => "DeliverySlow run() error: " . $err ];
+            exit;
+        }
     }
 }

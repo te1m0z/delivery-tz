@@ -2,20 +2,28 @@
 
 namespace App\Modules\Delivery;
 
-class DeliveryFactory
+use App\Modules\Delivery\Interfaces\DeliveryFactoryInterface;
+use App\Modules\Delivery\Interfaces\DeliveryQuickInterface;
+use App\Modules\Delivery\Interfaces\DeliverySlowInterface;
+
+# Абстрактная фабрика
+
+class DeliveryFactory implements DeliveryFactoryInterface
 {
-    public static function make( string $type )
+    /**
+     * @return DeliveryQuickInterface
+     */
+    public function createDeliveryQuick(): DeliveryQuickInterface
     {
-        if ( $type === 'slow' )
-        {
-            return new DeliverySlow();
-        }
+        return new DeliveryQuick();
+    }
 
-        if ( $type === 'quick' )
-        {
-            return new DeliveryQuick();
-        }
-
-        die( 'Не передан тип доставки' );
+    /**
+     * @return DeliverySlowInterface
+     */
+    public function createDeliverySlow(): DeliverySlowInterface
+    {
+        return new DeliverySlow();
     }
 }
+
